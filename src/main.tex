@@ -1,0 +1,465 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{wrapfig}
+\usepackage{needspace}
+\usepackage{soul}
+
+\title{Geode Ecosystem:
+Decentralized Liquid Ether Staking 
+for Organizations
+}
+\author{Geode Team}
+\date{September 2021 }
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Geode Portal is a first of its kind Decentralized Router that builds a trustless Ethereum
+staking Ecosystem for any service provider. Geode.fi allows participants to stake their Ether in
+multiple validators without issuing trust between any party involved; Users,
+Protocols/Wallets/Exchanges/
+Node Operators... and DAO.
+Proof of Stake has numerous benefits for the Ethereum community, with improvements on
+decentralization, energy efficiency, secure sharding, and overall better tokenomics with a more
+optimized financial structure. Ethereum staking is one of the most important upgrades coming
+with the Proof of Stake consensus algorithm.
+A lot of users are showing interest in staking, which will allow them to generate income.
+An individual can deploy a validator with 32 Ether. However, when the Ether is staked it is not
+possible to use it. For example, harvest yield on it with DeFi Protocols. The same individual can
+trust a third party, and deposit any amount of Ether to a Staking-as-a-Service protocol. In that
+case, the depositor needs to trust the third party's technical ability to run and manage the nodes,
+and trust they won’t steal the funds, as there is no possible way to ensure that in a decentralized
+way. Additionally, although such services emerged within the need for Eth2 staking in the DeFi
+ecosystem, it is not possible to trust these services and build on top of their implementation,
+because of the same reasoning.
+Geode Portal allows any protocol to take a part in Eth2 staking without worrying about
+maintaining an extensive staking infrastructure. In other words, we introduce a trustless Eth2
+staking functionality to any protocol. The implementation is as flexible as it can be and does not
+rely on the control of the developers in the Geode Ecosystem. Nodes do not rely on a single
+party’s private key management and can be issued to multiple Node Operators. Protocols can
+benefit from the staked funds by setting any percentage of the fee on the rewards accumulated by
+their users. Additionally, there are no fees taken by the Geode Governance.
+
+\end{abstract}
+
+
+\newpage
+
+{\small\tableofcontents}
+
+\section{Introduction}
+This paper will introduce two core products. The first one is a \ul {permissionless router},
+named Portal. Portal allows any protocol to have Eth2 staking functionality. It is open for public
+use, and completely removes the need for trust between parties, which is normally required for
+Eth2 staking. As the implementation of Geode Portal is very flexible, any protocol can easily
+build their use case on top of it. It can be very profitable for the protocols. Users can
+interact with the protocols directly, and there is no staking step needed from the user’s
+perspective. Ease of implementation, streamlined usability, and high-profit potential are just
+some of the reasons why we believe an expanded Eth2 staking Ecosystem will be built on top of
+this easy-to-use router.
+
+The second product is Geode Finance itself, which is a liquidity provider service for the Ecosystem. It consists of multiple stable coin liquidity pools, called GeoDEX, and is governed by the Geode Finance Dao. We believe this is a good solution for the Ecosystem’s fragmented liquidity problem.
+
+\subsection{Terminology}
+\begin{enumerate}
+\item \textbf{Service Provider:} A wallet, a DAO, a Centralized Exchange, or any other entity that serves a use case in the Ethereum Blockchain. Also implied by “Protocols”. Represented by a Representative.
+\item \textbf {Representative:} An address that secures the funds staked within a pool of a particular Service Provider.
+\item \textbf{Node Operator:}A service provider that is specialized in running Ethereum 2 Nodes. The Heart of Geode Ecosystem.
+\item \textbf{Telescope:}A specialized oracle, a decentralized network, or a trusted party that sends data from the outside world to a blockchain. The Eyes of the Geode Ecosystem.
+\item \textbf{Senate:} A multi-signature address that consists of privileged Representatives controlling the
+state of governance, updates and the other representatives in the Geode Ecosystem. The Brain
+of Geode Ecosystem.
+\item \textbf{Geode Finance DAO:} Consists of a collection of liquidity pools, named GeoDEX, for the Represented Service Providers, and a Router, named Portal, that allows users to stake. The Home of Geode Ecosystem.
+\item \textbf{Geode Ecosystem:} A collection of multiple Service Providers that benefits from the fee-less, trustless and decentralized infrastructure of Geode Finance.
+\item \textbf{Geode:} A Governance token that controls the Geode Finance DAO.
+\end{enumerate}
+
+
+
+\section{Contributors of  The Geode Ecosystem}
+
+\subsection{Governance}
+Governance is simply the Geode Protocol itself. A community that works to improve the core product
+and ensures its adoption in the DeFi ecosystem. Governance is controlled by a multi-signature
+address of developers. \textbf{Governance suggests updates on the Ecosystem however these updates cannot be implemented without the approval of the Senate. }
+
+Geode Finance deploys the liquidity pools for new protocols. (See \ref{geodex}) Every pool has 3 different types of wEth2 for different Representatives and 1 type of wEth2 for “liquid representative”, a protocol that provides liquidity to the overall Geode ecosystem. (See \ref{liqrep})  Governance is entitled to be the first Service Provider in the Geode Ecosystem as it provides multiple liquidity pools for the Representatives. Governance is not allowed to create its own Eth2 pool, thus does not provide that functionality and is bound to other Protocols. Additionally, it is responsible for providing a base layer of security for users of the Ecosystem by
+acting consistently with the Senate.
+
+
+Governance controls the following:
+        
+\begin{itemize}
+\item \textbf{proposeRepresentative}:  Proposes a new representative and waits for the
+		approval of the Senate.
+\item \textbf{proposeOperator}:  Proposes a new Node Operator and waits for the approval of the Senate.
+\item \textbf{proposeSenate}: In case the senate acts in a harmful way to the Ecosystem, or a new senate is needed, Governance can propose a new senate. The proposal has a deadline and \ul {2/3 of all representatives} need to approve the new Senate.
+\item \textbf{proposeUpgrade}: The address of the new implementation of the Portal is proposed by the governance, Senate needs to approve it before a proxy set to new implementation by the developers. \ul{This function needs to be implemented on every version} \ul{of the contract, or all functionality is broken.}
+\item \textbf{proposeProxyAdmin}: In case anything goes wrong with the old Admin contract, governance should be able to change it. However, the governance can not change it without the permission of the Senate. \ul{This function is not meant to be used. This function needs to be implemented on every version of the contract, or all functionality is broken.}
+\item \textbf{portalFee}: Global variable, the fee that is used to buyback the governance token on deposit of new funds. Can not be more than 1\%. Currently 0\% (zero).
+
+\item \textbf{operationFee}: Global variable, the fee taken from the validator rewards. Cannot be more than 10\%. Currently 0 (zero).
+
+
+
+
+\end{itemize}
+
+
+
+
+
+
+
+\subsection{Representatives}
+\subsubsection{Importance of the Representatives}
+There is no key management needed while staking on Eth2 due to the existence of Withdrawal contracts. However, users need a guard when the withdrawals are enabled. Additionally, Protocols need a controller when they start building on top of their Eth2 pool. Representatives can control the \ul{active Node Operator, wEth2 interfaces, operationFee}, and most importantly \ul{the Withdrawal Contract}.
+\subsubsection{Use Case}
+Any protocol that desires to be involved in the Ecosystem needs to have a
+legitimate use-case for Ether. It can be a wallet that wants to improve its usability and user interface, a DEX or CEX that wants to provide more yield, a lending protocol that wants to profit by staking the available (unused) collateral, \textbf{or a bridge that wants to introduce the wETH2 to another chain for trustless staking, etc.}
+
+\subsubsection{Reasons to Be a Representative}
+\begin{itemize}
+\item \textbf{Economic Incentives}:
+
+Representatives can adjust a fee between 0-80\%, taken from the validator rewards of the staked funds. Considering the validators will provide 2-10\% yearly income, this fee can have a significant contribution to the Represented Protocol’s treasury.  
+
+
+Additionally bringing a built-in Ether staking functionality to a protocol will provide more yields to your users, which helps protocols to stay competitive in the field.
+\item \textbf{Secure}:
+
+Representatives have full control over the staked funds and don't need to rely on other parties.
+
+\item \textbf{Decentralized}:
+
+Unlike other protocols, we do not aim to have a centralized pool with Eth2 staking functionality. We are enabling that functionality to any protocol! 
+
+\item \textbf{Ready to Go Infrastructure}:
+
+Operators run and optimize your validators, we handle the community. No follow-up is necessary.
+
+
+\end{itemize}
+\subsubsection{Being a Representative}
+Being a representative is easy. Just get in touch with our developers and propose your use case in our Forum:
+\begin{itemize}
+\item The Governance will vote for you on Geode Finance DAO. 
+\item If it passes, Geode Governance will propose it to the Senate.
+\item After the approval of the Senate, you can start implementing on top of your wrapped Ether2 Token.
+\item You can choose any Node Operator. 
+\end{itemize}
+\subsection{Senate}
+\subsubsection{Importance of the Senate}
+Due to the uncertainty of future improvements on the Beacon Chain, most of the contracts that form the Geode Ecosystem are upgradable. For example, once Ethereum 2.0 transfers are rolled out, the Governance would upgrade the Ecosystem to implement the feature. 
+On our path to a\textbf{ Fully Decentralized Operational State}, Geode Governance is the main decision-making mechanism in the Ecosystem with the power of upgrading the contracts. However, this would be a dangerous situation for any other Protocol that takes part in building the Ecosystem. To eliminate such a risk, we introduced the \textbf{Senate}, a control mechanism for all Representatives.
+\subsubsection{Role of the Senate}
+The main role of the Senate is to control all upgrades in the ecosystem. Additionally, the Senate controls the new Representatives and the Node Operators by approving the proposals of Governance. Senate controls the following:
+\begin{itemize}
+\item \textbf{approveUpgrade}: Approves new implementation contract that is proposed by the Governance.
+\item \textbf{approveProxyAdmin}: Approves new ProxyAdmin contract that is proposed by the Governance.
+\item \textbf{approveRepresentative}: Adds a new representative to the ecosystem, which is proposed by the governance.
+\item \textbf{approveOperator}: After a new Operator is proposed by the Governance, this function allows that party to conduct the service of running the Beacon Validators for the Representatives. 
+
+\end{itemize}
+\subsubsection{Structure of the Senate}
+There can be hundreds of different Service Providers that have different roles and we could allow everyone to take part in the approval mechanism. However, this would complicate their experience unnecessarily and obstruct further decentralization.
+Therefore, the Senate will be proposed by the Governance and approved by the current Representatives.
+Optimally the Senate will consist of 5-6 Representatives \& it will be conducted by a multi-sig address.
+
+\subsubsection{Choosing a New Senate}
+In case the Senate acts maliciously, for example preventing an upgrade that will improve the Ecosystem, the Governance can propose a different Senate that consists of different Representatives. The proposed Senate will require the approval of 2/3 of all Representatives within a given deadline. 
+
+\subsubsection{ Future Improvements}
+Once the Fully Decentralized Operational State is achieved, Governance can launch the final version of our core product. Along with the implementation of permissionless Representatives, Operators, and the decentralized Oracles, the contracts will no longer be upgradable and the Senate will not be necessary. 
+
+\subsection{Node Operators}
+Node Operators are the entities who run Beacon Validator nodes on behalf of a Representative and receive a fee in return. A new Node Operator can be included with a proposal by the Geode Governance and the approval of the Senate.
+
+\subsubsection{Creation of the Validator Keys}
+After entering the Ecosystem and being activated by a Representative, a Node Operator should generate and submit a set of BLS12-381 public keys that will be used by that certain Representative for making Beacon deposits. Along with the keys, a Node Operator submits a set of the corresponding signatures as defined in the spec. The DepositMessage used for generating the signature must be the following:
+\begin{itemize}
+\item  pubkey must be derived from the private key used for signing the message;
+\item amount must be equal to 32 Ether;
+\item withdrawal\_credentials must equal the Representative’s credentials.
+\end{itemize}
+The fork version used for generating the signature must correspond to the fork version
+of the Beacon Chain the instance of Geode Portal is targeted to.
+
+
+\subsubsection{operationFee}
+A Node Operator can set a fee percentage for the Validators rewards with maximum amount that is determined by the Senate. The fee is
+minted in terms of the certain Representative’s native wEth2 by every update of the
+Oracle. Node Operators can not claim more than 10\% fee on the Validator Rewards.
+However this rate can be changed by the Senate. Such a change would be applied to all
+Node Operators.
+\subsubsection{Choosing a Node Operator (for Representatives)}
+Representatives can change their “activeOperator” without any reasoning
+whenever they want. While the previously created validators will still be operated by the
+old Operator, Representatives can request a migration as well.
+Geode Router allows Node Operators to migrate their validators to another one.
+This operation is a simple transaction that adjusts the data for the fee distribution,
+nevertheless, this migration needs extreme caution for the well-being of the validators.
+\begin{itemize}
+\item Geode Finance will be the first Node Operator for the founding Representatives.
+\end{itemize}
+
+
+
+\subsection{Oracle - Telescope}
+"Telescope" is an oracle powered by Geode Finance. Telescope basically has two main functions;
+
+\begin{itemize}
+\item transacting the balance of verified validators in Ethereum 2.0,(Beacon Chain)to oracle contract
+\item reassuring the amount of deposited Ether to prevent new validators create vulnerabilities by providing incorrect withdrawal credentials.
+\end{itemize}
+
+
+ At the end of every frame (a day on Beacon Chain), updates the \_pricePerShare
+parameter for every x-wEth2 separately. 
+
+
+
+\section{Technical details}
+The Core of the \ul{Geode Ecosystem} is wEth2 (wrapped-Ether 2). wEth2 is an ERC-1155 implementation which acts as a \textbf{datastore} for the amount of Staked Ether that is represented by multiple Representatives. wEth2 is minted and managed by the Router, called the Portal. The Portal is deployed by the Governance and managed by the Senate.
+
+Furthermore, \ul{Geode Finance} is a decentralized exchange for trading cryptocurrency assets. The Core product of  Geode Finance is multiple liquidity pools that are designed specifically for trading stablecoins, as every x-wEth2 is a separate stablecoin. All the wEth2 pools are bound with a “Liquid wEth2”. Therefore, Geode Finance provides:
+\begin{itemize}
+\item Liquidity for all Representatives in the Ecosystem.
+\item A functionality that allows users to migrate their tokens between different Representatives with only 1 tx.
+\end{itemize}
+
+\subsection{wETH2 - The Database}
+wEth2 is the artificial name of a set of x-wEth2 tokens. A single non-upgradable ERC-1155, the multiple token standard contract, is used to create and track different wEth2 types for every single Representative. 
+
+Instead of a single token that represents the combined balance of all underlying Ether that is staked with different Representatives, wEth2 tracks every Representative separately. This
+implementation removes the trust between different Representatives. Additionally, with the enhanced flexibility of the implementation, the limitations of the Represented protocols don’t
+rely on the technical abilities of the Geode Developers. (See \ref{interfaces})
+
+Balances for the depositors of a single type of wEth2, x-wEth2, are tracked with a predetermined ID. IDs are the main separators of different types of wEth2, thus different
+representatives. 
+
+All different types of x-wEth2 tokens are controlled by the Portal. The Portal contains the data needed for the management of the Representatives and Operators, while the \_balances and
+\_pricePerShare is stored in the wEth2 contract.
+
+\subsubsection{x-wETH2}
+Every Representative has a different x-wEth2. For example, a protocol called Geode would have a geode-wEth2, etc. 
+
+It is a stable token that shows the amount of Staked Ether and the underlying equivalent of it. Because of the implementation requirements of ERC-1155, every Representative has a different ID and a different token name. Every token might have a different logic with the help of Interfaces.
+
+\subsubsection{\_pricePerShare}
+\_pricePerShare, basically a variable that represents the equivalent of 1 x-wETH2 in terms of underlying Ether.
+
+The balance of users, that is stored in \_balances parameter of the wEth2 contract, doesn’t change while the amount of underlying Ether changes, expectedly increasing over time. Every x-wEth2 has a different \_pricePerShare value. The variable is used in the Portal and updated by an Oracle.
+
+\subsubsection{Interfaces} \label{interfaces}
+wEth2 is a database of '\_balances'' and '\_pricePerShare' stored in an ERC-1155 contract. ERC-1155 tokens are not compatible with the DeFi ecosystem, thus they need to be mutated for public usage. Every x-wEth2 has a different use-case, therefore it doesn’t come with a preset implementation.
+
+Interfaces are external contracts. A Representative can set new Interfaces that will be used to manage the underlying asset(data) for different purposes, allowing Protocols to use the stored data with infinite flexibility. \ul{For example, a lending protocol can build an interface that uses the data from ERC} 
+\ul{-1155 contract to remove the deposit step.} As a result, every staked Ether can be used in the represented protocol without needing to transfer the underlying asset twice.
+
+Geode Portal deploys an ERC-20 interface for every new Representative even though Representatives might not need to use it. Representatives can not change this preset contract, but they can implement their own Interface and deactivate the old one. It is recommended to wait enough time before deactivation for the sake of the users that locked their tokens with the old Interface in another contract.
+
+
+Finally, an ID can have multiple Interfaces at once, meaning multiple contracts can alter the underlying data of \_balances at the same time. Therefore, a new interface doesn’t require a migration.
+
+\newpage
+\subsection{Geode Router - The Portal}
+
+
+
+\begin{figure}
+\includegraphics[width=\textwidth]{portal.png}
+\caption{The Portal}
+\end{figure}
+
+
+Portal is the heart of the Geode Ecosystem. Portal allows users to mint any type of x-wEth2. It is
+upgradable, but it cannot be upgraded if the Senate doesn’t allow it. By using this contract, the
+whole functionality is limited and secured. 
+
+
+Portal has 4 main functionalities:
+\begin{itemize}
+\item Allowing users to mint different types of x-wEth2 tokens.
+\item Adding new Representatives and Node Operators.
+\item Distributing the collected fee.
+\item Controlling the upgradability with the Senate.
+\end{itemize}
+
+Portal consists of 5 different solidity contracts. Minter is the most important contract and the other contracts are used to implement the whole logic around it.
+\begin{itemize}
+\item \textbf{Proxy Upgradable:} The contract that is being used as the one and only address of the Portal. Controlled by the Proxy Admin.
+\item \textbf{Proxy Admin}: The logic for upgrading the Proxy lies on here. There are some changes for the implementation of the Senate. Controlled by the Minter.
+\item \textbf{Minter}: The implementation contract that allows the minting of different types of x-wEth2 tokens. Controlled by the Senate.
+\item \textbf{Oracle}: Updates the \_pricePerShare parameter for every x-wEth2 separately.
+\item \textbf{Multiple Withdrawal Contracts:} There is a withdrawal contract for every representative.
+At the moment, it is just a plain upgradable contract. It is controlled by the certain
+Representative. Also, currently it is deployed and given as a parameter on the
+proposeRepresentative() contract. In Minter V2, approveRepresentative() should directly
+deploy it.
+\end{itemize}
+\clearpage
+\newpage
+
+\clearpage
+\subsection{Geode Pools - GeoDEX} \label{geodex}
+\Needspace{150pt}
+\begin{wrapfigure}{l}{0.45\textwidth}
+\includegraphics[width=0.9\linewidth]{pools.png} 
+\caption{Geodex} \label{fig2}
+
+\end{wrapfigure}
+
+
+An Eth2 staking pool needs liquidity to be able to function properly. Geode Finance is designed to provide the maximal amount of liquidity for every x-wEth2, thus it is the Home of the Ecosystem. 
+
+When 3 new protocols are added to the ecosystem as a Representative, a new pool is deployed in the GeoDEX. Every pool has 4 tokens, with 1 or more liquid representatives. Additionally, if a protocol requests, Geode Governance can provide 1:1 pool as well.
+
+
+\setcounter{subsubsection}{-1}
+\subsubsection{Motivation}
+When the Beacon Chain withdrawals are enabled, users will be able to withdraw Ether directly from the Portal. Thus, the perception of having proportional liquidity will no longer be used to define the stability of the protocol. However, a well managed liquidity, should be a part of that definition. As a result, the stability of token prices will be ensured by the virtue of Geodex. 
+
+The ability to move funds between different Representatives without unstaking, is provided through Geodex. However,if a user wants an emergency withdrawal from a pool, Liquid Representatives are entitled to provide the liquidity that is necessary within the pools that they operate. 
+\subsubsection{Implementation}
+A special Protocol that hosts ETH/x-wETH2 pool. It is also being used as a router between different pools. For example a user can migrate their funds from protocol Z to A with only 1 tx (shown in the Figure \ref{fig2}).
+
+\subsubsection{Generating Yield for the Community}
+The very purpose of the Geode Pools (GeoDEX) is to generate income for the users who want to stake their Ethers. While providing the ease of routing between different Eth2 pools.
+
+
+GeoDEX has an admin fee that is proportional to the 0.4\% Liquidity Provider fee. \textbf{This admin fee is currently the only source of income for the Geode DAO.}
+
+
+
+\subsubsection{Liquid Representative} \label{liqrep}
+A special protocol that hosts ETH/x-wETH2 pool. It is also being used as a router between different pools. For example a user can migrate their funds from protocol Z to A with only 1 tx (shown in the Figure \ref{fig2}). 
+\subsubsection{Future Improvements}
+\begin{itemize}
+\item For better pricing \_pricePerShare variable also needs to be used.
+\end{itemize}
+
+
+\clearpage
+\newpage
+
+\clearpage
+
+
+\subsection{Deploying Secure Validators}
+Validator credentials are created by the Node Operators. However, the Operators don't have access to the underlying Ether thanks to Withdrawal Contracts. When withdrawals are enabled for the Beacon Chain Validators, it will be possible
+to exit from the Ecosystem. Withdrawal Contracts will be the gate for the withdrawn funds. Every Representative has its own Withdrawal Contract. However, because of the
+uncertainty of the process, the preset contract is an empty upgradable contract that is controlled by the Representative and can not be mutated by anyone else, including the
+Senate and the Governance. A Withdrawal Contract is created when a new Representative is added to the Ecosystem. \textbf{It’s address is set and can not be changed.}
+
+\section{Launching the Geode Ecosystem}
+Geode Ecosystem will be launched on the Ropsten Testnet. Prior to the Mainnet launch there are 4 steps that should be taken.
+\subsection{Proof of Concept}
+\setcounter{subsubsection}{-1}
+\subsubsection{Testnet Deployment}
+All of the implementations explained above will be launched on Ropsten Testnet.
+\subsubsection{ICO}
+An ICO will start with the testnet launch and continue until the Mainnet launch.
+Minimum 25\% of the requested amount needs to be invested, as this will be seen as the
+first approval of the community. The collected budget will be used to improve the Geode
+Finance with multiple Audits.
+\subsubsection{Audits}
+Contracts need to be audited by multiple parties before the Mainnet Launch.
+\subsubsection{\textbf{4 Representatives}}
+To be able to launch the Geode Ecosystem, there is a need for 4 Founder Representatives. This will be seen as the second approval of the community. The users/holders/governance members of the Founder Representative Protocols will get an airdrop of the governance token.
+\subsubsection{Governance Approval for Mainnet Launch}
+After the above steps are taken, governance token holders will vote for the Mainnet Launch. This is the final approval needed.
+
+\subsection{Further Decentralization}
+\begin{itemize}
+\item Right after the Mainnet Launch, at least 3 other Node Operators will be added, and the
+funds that are managed by the Geode Finance will be migrated to other Operators. This
+step is important, because Geode Finance should not have any other role than providing
+the Governance in the Geode Ecosystem.
+\item For the further decentralization, the goal is to deploy 2 other Geode Finance wEth2 Pools. This means 10 Representative
+Protocols in total.
+\end{itemize}
+
+\section{Fully Decentralized Operational State} \label{fdos}
+FDOS is the main goal that our Governance is trying to bring into the Geode Ecosystem.
+It has 4 easy steps, however it can take years to achieve because of the uncertainty in the Eth2
+staking process.
+\subsection{Multiple node operators}
+Although initially the whole implementation is designed to make Geode Finance the only
+Node Operator in the Ecosystem, we changed our goals because we believe in decentralization.
+Geode Finance is the first Node Operator in the Ecosystem, but any Service Provider can take
+part in our Ecosystem as a Node Operator. Having multiple industry standard Node Operators
+will bring the decentralization that the Ethereum Community needs for Eth2 Validators.
+\subsection{Decentralized Oracles with ChainLink}
+Currently the Oracle is operated by the Governance and it updates the \_pricePerShare at
+the end of every frame. However this is the only implementation that requires trust as this
+parameter can possibly be used by a Representative in an Interface.
+
+One of the first implementations of the Governance will be changing the logic of the
+Oracle with the help of a decentralized Oracle Network; Chainlink with the highest possibility.
+
+
+After the change, Oracle will store separate data for every representative and update the
+parameter only when it is requested.
+\subsection{Permissionless Operators}
+Currently Operators are proposed by the Governance and added with the approval of the
+Senate. Initially this implementation improves the overall security of the Ecosystem. However,
+this is unnecessary since Representatives can choose/change their activeOperator.
+
+
+With an update to the Router contract, these steps will be eliminated and the Ecosystem
+will be open to any Node Operator. Afterwards, any Service Provider can take part in the
+Ecosystem without any permission. For example, a group of friends run their own Validator by
+using the Geode Ecosystem with the approval of the Senate.
+
+\subsection{Permissionless Representatives}
+The final step of the FDOS is permissionless Representatives. Similar to the Node
+Operators, Representatives need double approval from both Governance and Senate. After this
+upgrade, we will remove the need for any approval. Finally anyone can be a Representative
+and/or a Node Operator. For example, a group of friends run their own Validators by using the
+Geode Ecosystem with just 2 clicks without any approvals needed.
+
+After this step, Geode Ecosystem might not need the approval of the Senate for
+any operation, thus it may be remove
+
+\section{Risks}
+\subsection{Smart Contract Security}
+The security of the Portal is the highest priority for the Geode DAO. Users should
+investigate risks involved with Protocol before engaging with it. There is an inherent risk that
+Geode could contain vulnerabilities or bugs causing, among other things, the complete failure of
+Geode and/or its parts. This risk will be reduced with multiple tests and audits that will be
+conducted before deployments. Also the Senate will be guarding the Smart Contracts to provide
+the base layer security.
+\subsection{Beacon Chain Technical Risk}
+Geode is built on top of experimental technology under active development. There is no
+guarantee that the Beacon Chain network would be error-free or have a minimum uptime.
+Failures in Ethereum 2.0 might lead to validators slashing and result in a significant drop in the
+balance and price of the wEth2 tokens.
+
+\subsection{Slashing Risk}
+Beacon Chain validators are at risk of receiving staking penalties (for going offline, for
+example) and slashing (for double signing). In the worst case, when a lot of validators
+misconduct simultaneously, up to 100\% of the stake can be slashed. To mitigate this risk, the
+stake is distributed to a plethora of professional and reputable node operators. This risk is also
+reduced Since the Node Operators are chosen by the Representatives.
+
+\subsection{wETH2 Liquidity Risk}
+Besides the risk associated with validators' slashing and a wEth2 token balance drop,
+there is a chance that the exchange price of wEth2 will be less than fair price for a while. In the
+beginning, there is no withdrawal feature in Geode. As a result, arbitrage and risk-free
+market-making are impossible. However the risk will be reduced with the service of GeoDEX with Geode DAO.
+
+\end{document}
